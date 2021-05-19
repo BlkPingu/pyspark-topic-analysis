@@ -14,10 +14,9 @@ nlp = spacy.load('en_core_web_sm')
 nlp.max_length = 9999999
 nlp.add_pipe('merge_noun_chunks')
 
-os.environ["HADOOP_HOME"] = r'C:\Users\Roman\Desktop\sparkproto\spark'
+os.environ["HADOOP_HOME"] = r'C:\Users\Roman\Desktop\sparkproto\spark'  # is that even needed?
 
 # Import and preprocess documents
-# https://github.com/maobedkova/TopicModelling_PySpark_SparkNLP/blob/master/Topic_Modelling_with_PySpark_and_Spark_NLP.ipynb
 documents = []
 for file in glob.glob("texts/*.txt"):
     with open(file, 'r', encoding='utf-8') as f:
@@ -26,18 +25,20 @@ for file in glob.glob("texts/*.txt"):
         doc = nlp(text)
         documents.append([token.lemma_.lower() for token in doc if token.pos_ in ['NOUN', 'VERB']])
 
-sc = SparkContext(appName="TF-IDF & LDA Prototype")
-spark = SparkSession(sc)
+spark_context = SparkContext(appName="TF-IDF & LDA Prototype")
+spark_session = SparkSession(spark_context)
 
-# Create Document
-rdd1 = sc.parallelize(documents)
+# Create DataFrame
+rdd1 = spark_context.parallelize(documents)
 row_rdd = rdd1.map(lambda x: Row(x))
-df = spark.createDataFrame(row_rdd, ['words'])
+documents_df = spark_session.createDataFrame(row_rdd, ['words'])
+
+# https://github.com/maobedkova/TopicModelling_PySpark_SparkNLP/blob/master/Topic_Modelling_with_PySpark_and_Spark_NLP.ipynb
 
 # Calculate tf
 tf = CountVectorizer(inputCol='words', outputCol='tf_features')
-tf_model = tf.fit(df)
-tf_result = tf_model.transform(df)
+tf_model = tf.fit(documents_df)
+tf_result = tf_model.transform(documents_df)
 
 # Calculate tf-idf
 idf = IDF(inputCol='tf_features', outputCol='tf_idf_features')
