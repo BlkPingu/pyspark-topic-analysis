@@ -1,0 +1,15 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+pyspark = "*"
+numpy = "*"
+pyspark-stubs = "==3.0.0.post1"
+spacy = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.8"
