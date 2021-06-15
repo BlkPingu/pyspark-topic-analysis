@@ -8,6 +8,8 @@ pyspark = "*"
 numpy = "*"
 pyspark-stubs = "==3.0.0.post1"
 spacy = "*"
+pyldavis = "*"
+ipython = "*"
 
 [dev-packages]
 
