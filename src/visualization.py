@@ -5,12 +5,12 @@ from pyspark.sql import types
 import pyLDAvis
 
 
-def generate_visualization(df_filtered, count_vectorizer, tfidf_result, lda_model):
+def generate_visualization(file_name, df_filtered, count_vectorizer, tfidf_result, lda_model):
     tfidf_result_transformed = lda_model.transform(tfidf_result)
 
     data = __convert_data(df_filtered, count_vectorizer, tfidf_result_transformed, lda_model)
-    with open('vis.html', 'w') as ff:
-        pyLDAvis.save_html(pyLDAvis.prepare(**data), ff)
+    with open('visualisations/' + file_name + '.html', 'w') as f:
+        pyLDAvis.save_html(pyLDAvis.prepare(**data), f)
 
 
 def __convert_data(df_filtered, count_vectorizer, transformed, lda_model):
